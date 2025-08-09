@@ -39,7 +39,7 @@ Welcome to the LangChain Crash Course repository! This repo contains all the cod
    - Rename the `.env.example` file to `.env` and update the variables inside with your own values. Example:
 
    ```bash
-   mv .env.example .env
+   mv .env .env
    ```
 
 4. Activate the Poetry shell to run the examples:

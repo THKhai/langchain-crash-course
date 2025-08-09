@@ -1,10 +1,12 @@
 import os
-
+import dotenv
+from dotenv import load_dotenv
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAIEmbeddings
-
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+load_dotenv()
 # Define the directory containing the text files and the persistent directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
 books_dir = os.path.join(current_dir, "books")
@@ -26,30 +28,36 @@ if not os.path.exists(persistent_directory):
 
     # List all text files in the directory
     book_files = [f for f in os.listdir(books_dir) if f.endswith(".txt")]
+        #["book1.txt", "book2.txt"]
 
     # Read the text content from each file and store it with metadata
     documents = []
     for book_file in book_files:
         file_path = os.path.join(books_dir, book_file)
-        loader = TextLoader(file_path)
+        loader = TextLoader(file_path, encoding="utf-8")
         book_docs = loader.load()
+            #[Document(page_content="chunk1...", ...), ...]
         for doc in book_docs:
             # Add metadata to each document indicating its source
             doc.metadata = {"source": book_file}
+                #[Document(page_content="...", metadata={"source": "book1.txt"})]
             documents.append(doc)
-
+                #[Document(page_content="...", metadata={"source": "book1.txt"}), ...]
     # Split the documents into chunks
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
     docs = text_splitter.split_documents(documents)
-
+        #[Document(page_content="chunk1...", metadata={...}), ...]
     # Display information about the split documents
     print("\n--- Document Chunks Information ---")
     print(f"Number of document chunks: {len(docs)}")
 
     # Create embeddings
     print("\n--- Creating embeddings ---")
-    embeddings = OpenAIEmbeddings(
-        model="text-embedding-3-small"
+    # embeddings = OpenAIEmbeddings(
+    #     model="text-embedding-3-small"
+    # )  # Update to a valid embedding model if needed
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model="models/embedding-001"
     )  # Update to a valid embedding model if needed
     print("\n--- Finished creating embeddings ---")
 

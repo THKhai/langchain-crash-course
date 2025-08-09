@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from google.cloud import firestore
 from langchain_google_firestore import FirestoreChatMessageHistory
 from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
+
 
 """
 Steps to replicate this example:
@@ -23,7 +25,7 @@ Steps to replicate this example:
 load_dotenv()
 
 # Setup Firebase Firestore
-PROJECT_ID = "langchain-demo-abf48"
+PROJECT_ID = "langchain-tkdemo"
 SESSION_ID = "user_session_new"  # This could be a username or a unique ID
 COLLECTION_NAME = "chat_history"
 
@@ -42,7 +44,8 @@ print("Chat History Initialized.")
 print("Current Chat History:", chat_history.messages)
 
 # Initialize Chat Model
-model = ChatOpenAI()
+model = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
+# model = ChatOpenAI()
 
 print("Start chatting with the AI. Type 'exit' to quit.")
 
