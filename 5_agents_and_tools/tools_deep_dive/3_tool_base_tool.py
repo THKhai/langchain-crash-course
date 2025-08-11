@@ -9,8 +9,9 @@ from langchain import hub
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain.pydantic_v1 import BaseModel, Field
 from langchain_core.tools import BaseTool
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -70,7 +71,12 @@ tools = [
 ]
 
 # Initialize a ChatOpenAI model
-llm = ChatOpenAI(model="gpt-4o")
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.0-flash",
+    # tùy chọn:
+    # temperature=0.3,
+    # max_output_tokens=1024,
+)
 
 # Pull the prompt template from the hub
 prompt = hub.pull("hwchase17/openai-tools-agent")
