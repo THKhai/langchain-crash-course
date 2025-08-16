@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.document_loaders import FireCrawlLoader
 from langchain_community.vectorstores import Chroma
-from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 # Load environment variables from .env
 load_dotenv()
@@ -12,7 +12,7 @@ load_dotenv()
 # Define the persistent directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
 db_dir = os.path.join(current_dir, "db")
-persistent_directory = os.path.join(db_dir, "chroma_db_firecrawl")
+persistent_directory = os.path.join(db_dir, "chroma_db_firecrawl_gemini")
 
 
 def create_vector_store():
@@ -25,7 +25,7 @@ def create_vector_store():
     # Step 1: Crawl the website using FireCrawlLoader
     print("Begin crawling the website...")
     loader = FireCrawlLoader(
-        api_key=api_key, url="https://apple.com", mode="scrape")
+        api_key=api_key, url="https://apple.com", mode="crawl",params={"depth": 2})
     docs = loader.load()
     print("Finished crawling the website.")
 
@@ -45,7 +45,7 @@ def create_vector_store():
     print(f"Sample chunk:\n{split_docs[0].page_content}\n")
 
     # Step 3: Create embeddings for the document chunks
-    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
 
     # Step 4: Create and persist the vector store with the embeddings
     print(f"\n--- Creating vector store in {persistent_directory} ---")
@@ -63,7 +63,7 @@ else:
         f"Vector store {persistent_directory} already exists. No need to initialize.")
 
 # Load the vector store with the embeddings
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
 db = Chroma(persist_directory=persistent_directory,
             embedding_function=embeddings)
 
