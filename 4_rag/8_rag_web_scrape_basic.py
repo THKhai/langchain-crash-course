@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.vectorstores import Chroma
-from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 # Load environment variables from .env
 load_dotenv()
@@ -12,7 +12,7 @@ load_dotenv()
 # Define the persistent directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
 db_dir = os.path.join(current_dir, "db")
-persistent_directory = os.path.join(db_dir, "chroma_db_apple")
+persistent_directory = os.path.join(db_dir, "chroma_db_apple_gemini")
 
 # Step 1: Scrape the content from apple.com using WebBaseLoader
 # WebBaseLoader loads web pages and extracts their content
@@ -33,8 +33,8 @@ print(f"Number of document chunks: {len(docs)}")
 print(f"Sample chunk:\n{docs[0].page_content}\n")
 
 # Step 3: Create embeddings for the document chunks
-# OpenAIEmbeddings turns text into numerical vectors that capture semantic meaning
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+# GoogleGenerativeAIEmbeddings turns text into numerical vectors that capture semantic meaning
+embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
 
 # Step 4: Create and persist the vector store with the embeddings
 # Chroma stores the embeddings for efficient searching
