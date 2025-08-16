@@ -7,20 +7,15 @@ from langchain.agents import (
 from langchain_core.tools import Tool
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-# Load environment variables from .env file
 load_dotenv()
 
 
-# Define a very simple tool function that returns the current time
 def get_current_time(*args, **kwargs):
-    """Returns the current time in H:MM AM/PM format."""
-    import datetime  # Import datetime module to get current time
-
-    now = datetime.datetime.now()  # Get current time
-    return now.strftime("%I:%M %p")  # Format time in H:MM AM/PM format
+    import datetime 
+    now = datetime.datetime.now() 
+    return now.strftime("%I:%M %p") 
 
 
-# List of tools available to the agent
 tools = [
     Tool(
         name="Time",  # Name of the tool
@@ -30,12 +25,9 @@ tools = [
     ),
 ]
 
-# Pull the prompt template from the hub
-# ReAct = Reason and Action
 # https://smith.langchain.com/hub/hwchase17/react
 prompt = hub.pull("hwchase17/react")
 
-# Initialize a Gemini model
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.0-flash",
     # tùy chọn:
@@ -43,7 +35,6 @@ llm = ChatGoogleGenerativeAI(
     # max_output_tokens=1024,
 )
 
-# Create the ReAct agent using the create_react_agent function
 agent = create_react_agent(
     llm=llm,
     tools=tools,
@@ -51,15 +42,12 @@ agent = create_react_agent(
     stop_sequence=True,
 )
 
-# Create an agent executor from the agent and tools
 agent_executor = AgentExecutor.from_agent_and_tools(
     agent=agent,
     tools=tools,
     verbose=True,
 )
 
-# Run the agent with a test query
 response = agent_executor.invoke({"input": "What time is it?"})
 
-# Print the response from the agent
 print("response:", response)

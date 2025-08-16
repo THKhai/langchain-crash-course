@@ -9,8 +9,8 @@ from langchain_community.vectorstores import Chroma
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.tools import Tool
-# from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_google_genai import ChatGoogleGenerativeAI  # ⬅️ dùng Gemini
+from langchain_google_genai import ChatGoogleGenerativeAI 
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 
 # Load environment variables from .env file
@@ -32,7 +32,7 @@ else:
     )
 
 # Define the embedding model
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
 
 # Load the existing vector store with the embedding function
 db = Chroma(persist_directory=persistent_directory,
@@ -46,8 +46,10 @@ retriever = db.as_retriever(
     search_kwargs={"k": 3},
 )
 
-# Create a ChatOpenAI model
-llm = ChatOpenAI(model="gpt-4o")
+# Create a ChatGoogleGenerativeAI model
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.0-flash",
+)
 
 # Contextualize question prompt
 # This system prompt helps the AI understand that it should reformulate the question
